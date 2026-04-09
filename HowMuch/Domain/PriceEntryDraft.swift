@@ -7,6 +7,9 @@ struct PriceEntryDraft: Equatable, Sendable {
     var quantityText: String?
     var notes: String?
     var purchasedAt: Date
+    var latitude: Double?
+    var longitude: Double?
+    var placeName: String?
 
     init(
         amount: Decimal,
@@ -14,7 +17,10 @@ struct PriceEntryDraft: Equatable, Sendable {
         storeName: String? = nil,
         quantityText: String? = nil,
         notes: String? = nil,
-        purchasedAt: Date = .now
+        purchasedAt: Date = .now,
+        latitude: Double? = nil,
+        longitude: Double? = nil,
+        placeName: String? = nil
     ) {
         self.amount = amount
         self.currencyCode = currencyCode.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
@@ -22,6 +28,9 @@ struct PriceEntryDraft: Equatable, Sendable {
         self.quantityText = quantityText?.nilIfBlank
         self.notes = notes?.nilIfBlank
         self.purchasedAt = purchasedAt
+        self.latitude = latitude
+        self.longitude = longitude
+        self.placeName = placeName?.nilIfBlank
     }
 }
 
@@ -34,6 +43,9 @@ struct PriceEntryUpdateDraft: Equatable, Sendable {
     var quantityText: String?
     var notes: String?
     var purchasedAt: Date
+    var latitude: Double?
+    var longitude: Double?
+    var placeName: String?
 
     init(
         entryID: UUID,
@@ -43,7 +55,10 @@ struct PriceEntryUpdateDraft: Equatable, Sendable {
         storeName: String?,
         quantityText: String?,
         notes: String?,
-        purchasedAt: Date
+        purchasedAt: Date,
+        latitude: Double? = nil,
+        longitude: Double? = nil,
+        placeName: String? = nil
     ) {
         self.entryID = entryID
         self.productID = productID
@@ -53,5 +68,8 @@ struct PriceEntryUpdateDraft: Equatable, Sendable {
         self.quantityText = quantityText?.nilIfBlank
         self.notes = notes?.nilIfBlank
         self.purchasedAt = purchasedAt
+        self.latitude = latitude
+        self.longitude = longitude
+        self.placeName = placeName?.nilIfBlank
     }
 }

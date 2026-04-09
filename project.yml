@@ -23,6 +23,7 @@ targets:
         CFBundleDisplayName: "How Much?"
         LSRequiresIPhoneOS: true
         NSCameraUsageDescription: "How Much? uses the camera to scan product barcodes so you can save prices faster."
+        NSLocationWhenInUseUsageDescription: "How Much? tags the place where you saved a price so you can remember which store had the best deal. Location is only captured when you save a new price."
         UILaunchStoryboardName: LaunchScreen
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait

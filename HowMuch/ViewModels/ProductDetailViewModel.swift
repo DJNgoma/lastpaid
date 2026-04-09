@@ -5,6 +5,7 @@ import Observation
 @MainActor
 final class ProductDetailViewModel {
     private let catalogService: any CatalogServicing
+    let locationService: any LocationServicing
 
     let productID: UUID
     var product: ProductDetail?
@@ -12,9 +13,14 @@ final class ProductDetailViewModel {
     var errorMessage: String?
     var isLoading = false
 
-    init(productID: UUID, catalogService: any CatalogServicing) {
+    init(
+        productID: UUID,
+        catalogService: any CatalogServicing,
+        locationService: any LocationServicing
+    ) {
         self.productID = productID
         self.catalogService = catalogService
+        self.locationService = locationService
     }
 
     var historySnapshot: PriceHistorySnapshot {

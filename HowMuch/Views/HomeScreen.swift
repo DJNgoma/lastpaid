@@ -208,6 +208,10 @@ private struct RecentProductRow: View {
                         Image(systemName: "bag.fill")
                             .font(.system(size: 9))
                         Text(store).lineLimit(1)
+                    } else if let place = summary.latestEntry?.placeName {
+                        Image(systemName: "location.fill")
+                            .font(.system(size: 9))
+                        Text(place).lineLimit(1)
                     } else {
                         Image(systemName: "barcode")
                             .font(.system(size: 9))

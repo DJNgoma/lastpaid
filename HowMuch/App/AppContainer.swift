@@ -6,15 +6,18 @@ final class AppContainer {
     let persistentContainer: NSPersistentCloudKitContainer
     let catalogService: any CatalogServicing
     let permissionService: any CameraPermissionProviding
+    let locationService: any LocationServicing
 
     init(
         persistentContainer: NSPersistentCloudKitContainer,
         catalogService: any CatalogServicing,
-        permissionService: any CameraPermissionProviding
+        permissionService: any CameraPermissionProviding,
+        locationService: any LocationServicing
     ) {
         self.persistentContainer = persistentContainer
         self.catalogService = catalogService
         self.permissionService = permissionService
+        self.locationService = locationService
     }
 
     static func live() throws -> AppContainer {
@@ -25,7 +28,8 @@ final class AppContainer {
         return AppContainer(
             persistentContainer: persistentContainer,
             catalogService: catalogService,
-            permissionService: CameraPermissionService()
+            permissionService: CameraPermissionService(),
+            locationService: LocationService()
         )
     }
 
@@ -42,10 +46,18 @@ final class AppContainer {
     }
 
     func makeProductCaptureViewModel(initialDraft: ProductDraft) -> ProductCaptureViewModel {
-        ProductCaptureViewModel(initialDraft: initialDraft, catalogService: catalogService)
+        ProductCaptureViewModel(
+            initialDraft: initialDraft,
+            catalogService: catalogService,
+            locationService: locationService
+        )
     }
 
     func makeProductDetailViewModel(productID: UUID) -> ProductDetailViewModel {
-        ProductDetailViewModel(productID: productID, catalogService: catalogService)
+        ProductDetailViewModel(
+            productID: productID,
+            catalogService: catalogService,
+            locationService: locationService
+        )
     }
 }

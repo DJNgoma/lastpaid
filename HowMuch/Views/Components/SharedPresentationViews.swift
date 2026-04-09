@@ -52,6 +52,13 @@ struct HistoryRow: View {
             .foregroundStyle(.secondary)
             .lineLimit(1)
 
+            if let place = entry.placeName {
+                Label(place, systemImage: "location.fill")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+            }
+
             if let notes = entry.notes, notes.isEmpty == false {
                 Text(notes)
                     .font(.caption)

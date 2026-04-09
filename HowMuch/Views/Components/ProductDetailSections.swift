@@ -38,6 +38,16 @@ struct HeroPriceCard: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .padding(.top, 2)
+
+                    if let place = latest.placeName {
+                        HStack(spacing: 4) {
+                            Image(systemName: "location.fill")
+                                .font(.system(size: 10, weight: .semibold))
+                            Text(place)
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                    }
                 }
 
                 if let previous = snapshot.previous {

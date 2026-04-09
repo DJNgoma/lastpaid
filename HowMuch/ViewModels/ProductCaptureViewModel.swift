@@ -5,6 +5,7 @@ import Observation
 @MainActor
 final class ProductCaptureViewModel {
     private let catalogService: any CatalogServicing
+    private let locationService: any LocationServicing
 
     var barcodeValue: String
     var barcodeType: BarcodeType
@@ -20,12 +21,31 @@ final class ProductCaptureViewModel {
     var errorMessage: String?
     var isSaving = false
 
-    init(initialDraft: ProductDraft, catalogService: any CatalogServicing) {
+    var capturedLocation: CapturedLocation?
+    var isCapturingLocation = false
+
+    init(
+        initialDraft: ProductDraft,
+        catalogService: any CatalogServicing,
+        locationService: any LocationServicing
+    ) {
         self.catalogService = catalogService
+        self.locationService = locationService
         self.barcodeValue = initialDraft.barcodeValue
         self.barcodeType = initialDraft.barcodeType
         self.customName = initialDraft.customName
         self.brand = initialDraft.brand ?? ""
+    }
+
+    func captureLocationIfPossible() async {
+        guard capturedLocation == nil, isCapturingLocation == false else { return }
+        isCapturingLocation = true
+        capturedLocation = await locationService.captureCurrent()
+        isCapturingLocation = false
+    }
+
+    func clearLocation() {
+        capturedLocation = nil
     }
 
     var canSave: Bool {
@@ -55,7 +75,10 @@ final class ProductCaptureViewModel {
                     storeName: storeName,
                     quantityText: quantityText,
                     notes: notes,
-                    purchasedAt: purchasedAt
+                    purchasedAt: purchasedAt,
+                    latitude: capturedLocation?.latitude,
+                    longitude: capturedLocation?.longitude,
+                    placeName: capturedLocation?.placeName
                 )
             )
             errorMessage = nil

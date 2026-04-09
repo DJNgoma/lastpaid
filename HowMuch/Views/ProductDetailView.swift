@@ -49,7 +49,8 @@ struct ProductDetailView: View {
         .sheet(isPresented: $isAddingPrice) {
             PriceEntryEditorView(
                 title: "Add Price",
-                recentStores: viewModel.recentStores
+                recentStores: viewModel.recentStores,
+                locationService: viewModel.locationService
             ) { draft in
                 let updated = viewModel.addPriceEntry(draft)
                 if updated {
@@ -62,7 +63,8 @@ struct ProductDetailView: View {
             PriceEntryEditorView(
                 title: "Edit Price",
                 existingEntry: entry,
-                recentStores: viewModel.recentStores
+                recentStores: viewModel.recentStores,
+                locationService: viewModel.locationService
             ) { draft in
                 let updated = viewModel.updatePriceEntry(
                     PriceEntryUpdateDraft(
@@ -73,7 +75,10 @@ struct ProductDetailView: View {
                         storeName: draft.storeName,
                         quantityText: draft.quantityText,
                         notes: draft.notes,
-                        purchasedAt: draft.purchasedAt
+                        purchasedAt: draft.purchasedAt,
+                        latitude: draft.latitude,
+                        longitude: draft.longitude,
+                        placeName: draft.placeName
                     )
                 )
                 if updated {

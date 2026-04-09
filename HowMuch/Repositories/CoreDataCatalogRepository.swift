@@ -64,6 +64,9 @@ final class CoreDataCatalogRepository: CatalogRepository {
                 purchasedAt: initialEntry.purchasedAt,
                 createdAt: now,
                 updatedAt: now,
+                latitude: initialEntry.latitude,
+                longitude: initialEntry.longitude,
+                placeName: initialEntry.placeName,
                 product: product
             )
         }
@@ -120,6 +123,9 @@ final class CoreDataCatalogRepository: CatalogRepository {
             purchasedAt: draft.purchasedAt,
             createdAt: now,
             updatedAt: now,
+            latitude: draft.latitude,
+            longitude: draft.longitude,
+            placeName: draft.placeName,
             product: product
         )
 
@@ -145,6 +151,9 @@ final class CoreDataCatalogRepository: CatalogRepository {
         entry.quantityText = draft.quantityText
         entry.notes = draft.notes
         entry.purchasedAt = draft.purchasedAt
+        entry.latitude = draft.latitude.map { NSNumber(value: $0) }
+        entry.longitude = draft.longitude.map { NSNumber(value: $0) }
+        entry.placeName = draft.placeName
         entry.updatedAt = now
         product.updatedAt = now
 
@@ -365,7 +374,10 @@ final class CoreDataCatalogRepository: CatalogRepository {
                     notes: entry.notes,
                     purchasedAt: entry.purchasedAt,
                     createdAt: entry.createdAt,
-                    updatedAt: entry.updatedAt
+                    updatedAt: entry.updatedAt,
+                    latitude: entry.latitude?.doubleValue,
+                    longitude: entry.longitude?.doubleValue,
+                    placeName: entry.placeName
                 )
             }
     }

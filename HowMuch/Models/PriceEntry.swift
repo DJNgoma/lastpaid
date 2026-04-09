@@ -12,6 +12,9 @@ final class PriceEntry: NSManagedObject {
     @NSManaged var purchasedAt: Date
     @NSManaged var createdAt: Date
     @NSManaged var updatedAt: Date
+    @NSManaged var latitude: NSNumber?
+    @NSManaged var longitude: NSNumber?
+    @NSManaged var placeName: String?
     @NSManaged var product: Product?
 
     convenience init(
@@ -25,6 +28,9 @@ final class PriceEntry: NSManagedObject {
         purchasedAt: Date = .now,
         createdAt: Date = .now,
         updatedAt: Date = .now,
+        latitude: Double? = nil,
+        longitude: Double? = nil,
+        placeName: String? = nil,
         product: Product? = nil
     ) {
         guard let entity = NSEntityDescription.entity(forEntityName: "PriceEntry", in: context) else {
@@ -40,6 +46,9 @@ final class PriceEntry: NSManagedObject {
         self.purchasedAt = purchasedAt
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.latitude = latitude.map { NSNumber(value: $0) }
+        self.longitude = longitude.map { NSNumber(value: $0) }
+        self.placeName = placeName
         self.product = product
     }
 

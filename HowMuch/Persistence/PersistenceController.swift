@@ -80,6 +80,9 @@ enum PersistenceController {
         let purchasedAt = makeAttribute(name: "purchasedAt", type: .dateAttributeType)
         let entryCreatedAt = makeAttribute(name: "createdAt", type: .dateAttributeType)
         let entryUpdatedAt = makeAttribute(name: "updatedAt", type: .dateAttributeType)
+        let latitude = makeAttribute(name: "latitude", type: .doubleAttributeType, optional: true)
+        let longitude = makeAttribute(name: "longitude", type: .doubleAttributeType, optional: true)
+        let placeName = makeAttribute(name: "placeName", type: .stringAttributeType, optional: true)
 
         let productToEntries = NSRelationshipDescription()
         productToEntries.name = "priceEntries"
@@ -127,6 +130,9 @@ enum PersistenceController {
             purchasedAt,
             entryCreatedAt,
             entryUpdatedAt,
+            latitude,
+            longitude,
+            placeName,
             entryToProduct
         ]
 

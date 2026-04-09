@@ -41,6 +41,15 @@ struct ProductCaptureView: View {
                     TextField("Notes", text: $viewModel.notes, axis: .vertical)
                 }
 
+                Section("Location") {
+                    LocationPill(
+                        capturedLocation: viewModel.capturedLocation,
+                        isCapturing: viewModel.isCapturingLocation,
+                        onTagAgain: { Task { viewModel.clearLocation(); await viewModel.captureLocationIfPossible() } },
+                        onClear: { viewModel.clearLocation() }
+                    )
+                }
+
                 RecentStoresSection(stores: viewModel.recentStores) { store in
                     viewModel.storeName = store
                 }
@@ -63,6 +72,7 @@ struct ProductCaptureView: View {
         }
         .task {
             viewModel.loadRecentStores()
+            await viewModel.captureLocationIfPossible()
         }
         .alert("Unable to Save", isPresented: errorAlertBinding) {
             Button("OK", role: .cancel) { }

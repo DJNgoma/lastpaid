@@ -12,6 +12,7 @@
 		1AC3DFBB8DEA1AC0A78923BA /* PriceHistoryCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AD596FE0BC1FAFFC494477 /* PriceHistoryCalculator.swift */; };
 		1EBFCA609B067E1AEA5BF640 /* PriceEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692FD9EFBB8BC624F3C1BCCC /* PriceEntry.swift */; };
 		24D5A3B17858A188F1A2EF7F /* String+Sanitizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF379C1835EE6A0A5CEC53E0 /* String+Sanitizing.swift */; };
+		25A0BA30C51800E4712605BB /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D35338F4E23C3BC85F9CDD /* LocationService.swift */; };
 		2B7AD37B96D91F821A6CD4C4 /* CatalogRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD67741C0C1219EA8CFE245 /* CatalogRepository.swift */; };
 		2CEE47F850F6415DD18D0F0C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DBA41856660AA68EE3FA484 /* PersistenceController.swift */; };
 		2E323C03B70221ED8D1474E1 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAAE73CCA8271621F2D7690 /* AppContainer.swift */; };
@@ -28,6 +29,7 @@
 		472FB8B2BE10EEA01E965E47 /* ScannedBarcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9217ACA22A9C3A1E5572A317 /* ScannedBarcode.swift */; };
 		4819F84D40ECFF055D0EFBCC /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7916BE2EE2A89F805ABD3851 /* CurrencyFormatter.swift */; };
 		4BA4BDFCECE990C11C29EF82 /* CatalogRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79D5C8BCF13D9F024C267B1 /* CatalogRootView.swift */; };
+		4D74AA2D641A3F7E1F80EE39 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D35338F4E23C3BC85F9CDD /* LocationService.swift */; };
 		4F6827F79AC92B1B410ABEB2 /* ProductDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FCF84E5E66FDA2F374D1E6 /* ProductDraft.swift */; };
 		551C6D6CE0D69B76C183F7C2 /* BarcodeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41554A503824600AC29AF510 /* BarcodeType.swift */; };
 		562A0FB79354488C48DC617B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9F0D2139AC85458C4FBF9204 /* Assets.xcassets */; };
@@ -92,6 +94,7 @@
 		44DF238B1431A89D021AE41B /* CatalogServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogServiceTests.swift; sourceTree = "<group>"; };
 		4B0D3CECD2960C912A8BD213 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		66979C5C8F711B7043F13CD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		66D35338F4E23C3BC85F9CDD /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		6743B507073A8156CBCB0A53 /* CoreDataCatalogRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataCatalogRepository.swift; sourceTree = "<group>"; };
 		692FD9EFBB8BC624F3C1BCCC /* PriceEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceEntry.swift; sourceTree = "<group>"; };
 		7168967C2E304E90AE0F553E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -154,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				141947639805FCD263E2B5B8 /* Catalog */,
+				9BA4B01F5A05AA81BB7236B4 /* Location */,
 				F5DCB76103F015ED9ACDFB80 /* Scanner */,
 			);
 			path = Services;
@@ -249,6 +253,14 @@
 				ACCBC721FAD999900BF8ACBC /* HowMuchApp.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		9BA4B01F5A05AA81BB7236B4 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				66D35338F4E23C3BC85F9CDD /* LocationService.swift */,
+			);
+			path = Location;
 			sourceTree = "<group>";
 		};
 		B5CD49B87DC261544544F9B8 /* Views */ = {
@@ -396,6 +408,7 @@
 				EF993CC83D877E5091013D29 /* DecimalParser.swift in Sources */,
 				3051EDAC317157119ECBBFD9 /* HomeScreen.swift in Sources */,
 				EAF2981206F451F4727D77A7 /* HowMuchApp.swift in Sources */,
+				25A0BA30C51800E4712605BB /* LocationService.swift in Sources */,
 				E6A3A583F963BF01348ACE94 /* OnboardingView.swift in Sources */,
 				FC09E8139F545188420077D9 /* PersistenceController.swift in Sources */,
 				C8D1B37B885090587AE3E00B /* PriceEntry.swift in Sources */,
@@ -436,6 +449,7 @@
 				AC01C70F60A5C1CC275DB1D8 /* CoreDataCatalogRepository.swift in Sources */,
 				4819F84D40ECFF055D0EFBCC /* CurrencyFormatter.swift in Sources */,
 				E9A5A775C2844A3700BE8645 /* DecimalParser.swift in Sources */,
+				4D74AA2D641A3F7E1F80EE39 /* LocationService.swift in Sources */,
 				2CEE47F850F6415DD18D0F0C /* PersistenceController.swift in Sources */,
 				1EBFCA609B067E1AEA5BF640 /* PriceEntry.swift in Sources */,
 				9FAA6671850EC71158A97781 /* PriceEntryDraft.swift in Sources */,
