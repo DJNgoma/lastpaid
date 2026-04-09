@@ -3,6 +3,7 @@ import SwiftUI
 private enum CatalogRoute: Hashable {
     case product(UUID)
     case browseAll
+    case settings
 }
 
 private enum CatalogSheet: Identifiable {
@@ -58,6 +59,17 @@ struct CatalogRootView: View {
                 onBrowseAll: { path.append(.browseAll) }
             )
             .navigationTitle("How Much?")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        path.append(.settings)
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .font(.system(size: 17, weight: .semibold))
+                    }
+                    .accessibilityLabel("Settings")
+                }
+            }
             .searchable(text: $viewModel.searchText, prompt: "Search products, barcodes, or stores")
             .task { viewModel.loadIfNeeded() }
             .onChange(of: viewModel.searchText) { _, _ in viewModel.scheduleLoad() }
@@ -78,6 +90,8 @@ struct CatalogRootView: View {
                         viewModel: viewModel,
                         onOpenProduct: { path.append(.product($0)) }
                     )
+                case .settings:
+                    SettingsView()
                 }
             }
             .sheet(item: $presentedSheet, onDismiss: handleSheetDismiss) { sheet in

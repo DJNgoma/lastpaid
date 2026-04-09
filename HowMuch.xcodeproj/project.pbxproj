@@ -28,7 +28,9 @@
 		42E30DABDC6CF4A0E3398805 /* CoreDataCatalogRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6743B507073A8156CBCB0A53 /* CoreDataCatalogRepository.swift */; };
 		472FB8B2BE10EEA01E965E47 /* ScannedBarcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9217ACA22A9C3A1E5572A317 /* ScannedBarcode.swift */; };
 		4819F84D40ECFF055D0EFBCC /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7916BE2EE2A89F805ABD3851 /* CurrencyFormatter.swift */; };
+		4ACF000C06DD6A8E8A836507 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012169B810F688DF2653AA6D /* SplashView.swift */; };
 		4BA4BDFCECE990C11C29EF82 /* CatalogRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79D5C8BCF13D9F024C267B1 /* CatalogRootView.swift */; };
+		4C17E1C2C3358028CB65A8C2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951B63A6C99923758ED72F8 /* SettingsView.swift */; };
 		4D74AA2D641A3F7E1F80EE39 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D35338F4E23C3BC85F9CDD /* LocationService.swift */; };
 		4F6827F79AC92B1B410ABEB2 /* ProductDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FCF84E5E66FDA2F374D1E6 /* ProductDraft.swift */; };
 		551C6D6CE0D69B76C183F7C2 /* BarcodeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41554A503824600AC29AF510 /* BarcodeType.swift */; };
@@ -75,6 +77,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		012169B810F688DF2653AA6D /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		028BF106A0803B60745D900F /* ScannerTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerTypes.swift; sourceTree = "<group>"; };
 		02B5C9002DF90CB3D15CB1BC /* ProductMetadataEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMetadataEditorView.swift; sourceTree = "<group>"; };
 		072F9EEA04F9E518E8D0A8A6 /* PriceHistoryCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceHistoryCalculatorTests.swift; sourceTree = "<group>"; };
@@ -115,6 +118,7 @@
 		BB6BEEEABE505E58D1768F04 /* ProductCaptureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCaptureViewModel.swift; sourceTree = "<group>"; };
 		C7A2B1689E2558E08CEF590C /* PriceEntryEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceEntryEditorView.swift; sourceTree = "<group>"; };
 		C7D6C8A3565572FE7927E965 /* ProductSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSnapshot.swift; sourceTree = "<group>"; };
+		C951B63A6C99923758ED72F8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CD61FA2A6619FBD6D07D8784 /* BarcodeScannerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerService.swift; sourceTree = "<group>"; };
 		D813DCBC8C3024ABDECCA4E0 /* CameraPermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPermissionService.swift; sourceTree = "<group>"; };
 		DE5DCEE8BC29285A4F3A278A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -272,6 +276,8 @@
 				AE99AE070A064E046034842F /* ProductCaptureView.swift */,
 				1F61C573B849EACC3B90BBF7 /* ProductDetailView.swift */,
 				743866C5EB0D9E3CD6FFAD50 /* ScannerView.swift */,
+				C951B63A6C99923758ED72F8 /* SettingsView.swift */,
+				012169B810F688DF2653AA6D /* SplashView.swift */,
 				6A21DF69736ABC3661780F73 /* Components */,
 			);
 			path = Views;
@@ -429,7 +435,9 @@
 				DC3584D98814CFA550C81E73 /* ScannerTypes.swift in Sources */,
 				62B007063367AF12D8B73AD9 /* ScannerView.swift in Sources */,
 				DF97E14BA5F749310C6AE4E2 /* ScannerViewModel.swift in Sources */,
+				4C17E1C2C3358028CB65A8C2 /* SettingsView.swift in Sources */,
 				77F54D07D18E0494BCCBE56D /* SharedPresentationViews.swift in Sources */,
+				4ACF000C06DD6A8E8A836507 /* SplashView.swift in Sources */,
 				37920FAE39287B44E2B11AE7 /* String+Sanitizing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
