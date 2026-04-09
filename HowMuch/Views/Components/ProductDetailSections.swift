@@ -6,40 +6,61 @@ struct HeroPriceCard: View {
     let onAddPrice: () -> Void
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 18) {
             if let latest = snapshot.latest {
-                VStack(spacing: 6) {
-                    Text("Last paid")
-                        .font(.caption.weight(.medium))
+                VStack(spacing: 8) {
+                    Text("LAST PAID")
+                        .font(.system(size: 11, weight: .semibold))
+                        .tracking(0.8)
                         .foregroundStyle(.secondary)
-                        .textCase(.uppercase)
 
                     PriceBadge(
                         amount: latest.amount,
                         currencyCode: latest.currencyCode,
                         emphasis: .hero
                     )
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+
+                    PriceTrendChip(latest: latest, previous: snapshot.previous)
 
                     HStack(spacing: 6) {
+                        Image(systemName: "calendar")
+                            .font(.system(size: 11, weight: .semibold))
                         Text(latest.purchasedAt, format: .dateTime.month(.abbreviated).day().year())
                         if let store = latest.storeName {
                             Text("·")
+                            Image(systemName: "bag.fill")
+                                .font(.system(size: 10, weight: .semibold))
                             Text(store)
                         }
                     }
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .padding(.top, 2)
                 }
 
-                if snapshot.previous != nil || snapshot.difference != nil {
+                if let previous = snapshot.previous {
                     Divider()
-                    comparisonRow
+                    HStack {
+                        Text("Previous")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(CurrencyFormatter.string(from: previous.amount, currencyCode: previous.currencyCode))
+                            .font(.system(size: 16, weight: .semibold, design: .rounded))
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                        Text(previous.purchasedAt, format: .dateTime.month(.abbreviated).day())
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
             } else {
-                VStack(spacing: 8) {
+                VStack(spacing: 10) {
                     Image(systemName: "tag")
-                        .font(.system(size: 36, weight: .light))
-                        .foregroundStyle(.tertiary)
+                        .font(.system(size: 38, weight: .light))
+                        .foregroundStyle(Color.accentColor.opacity(0.7))
                     Text("No price saved yet")
                         .font(.headline)
                     Text("Add the price you paid so you can recall it next time.")
@@ -50,65 +71,35 @@ struct HeroPriceCard: View {
                 .padding(.vertical, 8)
             }
 
-            Button(action: onAddPrice) {
-                Label("Add New Price", systemImage: "plus")
-                    .font(.subheadline.weight(.semibold))
+            Button {
+                Haptics.medium()
+                onAddPrice()
+            } label: {
+                Label("Add New Price", systemImage: "plus.circle.fill")
+                    .font(.system(size: 16, weight: .semibold))
                     .frame(maxWidth: .infinity)
-                    .frame(height: 44)
+                    .frame(height: 48)
                     .foregroundStyle(.white)
                     .background(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(Color.accentColor)
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.accentColor, Color.accentColor.opacity(0.82)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
                     )
+                    .shadow(color: Color.accentColor.opacity(0.28), radius: 10, x: 0, y: 4)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(PressableScaleButtonStyle())
         }
-        .padding(20)
+        .padding(22)
         .frame(maxWidth: .infinity)
         .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(Color(.secondarySystemGroupedBackground))
         )
-    }
-
-    @ViewBuilder
-    private var comparisonRow: some View {
-        HStack(alignment: .top, spacing: 12) {
-            if let previous = snapshot.previous {
-                stat(
-                    label: "Previous",
-                    value: CurrencyFormatter.string(from: previous.amount, currencyCode: previous.currencyCode),
-                    tint: .secondary
-                )
-            }
-            if let difference = snapshot.difference, let latest = snapshot.latest {
-                Divider().frame(height: 32)
-                stat(
-                    label: "Change",
-                    value: CurrencyFormatter.string(
-                        from: difference,
-                        currencyCode: latest.currencyCode,
-                        alwaysShowSign: true
-                    ),
-                    tint: difference.sign == .minus ? .green : .orange
-                )
-            }
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private func stat(label: String, value: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .font(.caption.weight(.medium))
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
-            Text(value)
-                .font(.system(size: 17, weight: .semibold, design: .rounded))
-                .monospacedDigit()
-                .foregroundStyle(tint)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
