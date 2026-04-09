@@ -41,6 +41,10 @@ final class AppContainer {
         )
     }
 
+    func makeProductCaptureViewModel(initialDraft: ProductDraft) -> ProductCaptureViewModel {
+        ProductCaptureViewModel(initialDraft: initialDraft, catalogService: catalogService)
+    }
+
     func makeProductDetailViewModel(productID: UUID) -> ProductDetailViewModel {
         ProductDetailViewModel(productID: productID, catalogService: catalogService)
     }

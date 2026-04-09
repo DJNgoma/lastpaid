@@ -15,7 +15,7 @@ struct ProductDraft: Equatable, Sendable, Identifiable {
         brand: String? = nil
     ) {
         self.id = id
-        self.barcodeValue = BarcodeNormalizer.normalize(barcodeValue)
+        self.barcodeValue = BarcodeNormalizer.normalize(barcodeValue, symbology: barcodeType)
         self.barcodeType = barcodeType
         self.customName = customName.trimmingCharacters(in: .whitespacesAndNewlines)
         self.brand = brand?.nilIfBlank
@@ -31,7 +31,7 @@ struct ProductUpdateDraft: Equatable, Sendable {
 
     init(productID: UUID, barcodeValue: String, barcodeType: BarcodeType, customName: String, brand: String?) {
         self.productID = productID
-        self.barcodeValue = BarcodeNormalizer.normalize(barcodeValue)
+        self.barcodeValue = BarcodeNormalizer.normalize(barcodeValue, symbology: barcodeType)
         self.barcodeType = barcodeType
         self.customName = customName.trimmingCharacters(in: .whitespacesAndNewlines)
         self.brand = brand?.nilIfBlank

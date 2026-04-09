@@ -27,7 +27,9 @@ final class PriceEntry: NSManagedObject {
         updatedAt: Date = .now,
         product: Product? = nil
     ) {
-        let entity = NSEntityDescription.entity(forEntityName: "PriceEntry", in: context)!
+        guard let entity = NSEntityDescription.entity(forEntityName: "PriceEntry", in: context) else {
+            preconditionFailure("Missing PriceEntry entity definition.")
+        }
         self.init(entity: entity, insertInto: context)
         self.id = id
         self.amountStorage = Self.serialize(amount)
@@ -43,11 +45,22 @@ final class PriceEntry: NSManagedObject {
 
     var amount: Decimal {
         get {
-            Decimal(string: amountStorage, locale: Locale(identifier: "en_US_POSIX")) ?? .zero
+            (try? decodedAmount()) ?? .zero
         }
         set {
             amountStorage = Self.serialize(newValue)
         }
+    }
+
+    func decodedAmount() throws -> Decimal {
+        guard let amount = Decimal(
+            string: amountStorage,
+            locale: Locale(identifier: "en_US_POSIX")
+        ) else {
+            throw CatalogError.corruptedPriceData
+        }
+
+        return amount
     }
 
     private static func serialize(_ amount: Decimal) -> String {

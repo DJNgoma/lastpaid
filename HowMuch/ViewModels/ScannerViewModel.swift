@@ -14,7 +14,7 @@ final class ScannerViewModel {
     var resolution: ScanResolution?
     var isManualEntryPresented = false
     var manualBarcodeValue = ""
-    var manualBarcodeType: BarcodeType = .ean13
+    var manualBarcodeType: BarcodeType = BarcodeType.userSelectableCases.first ?? .ean13
 
     var captureSession: AVCaptureSession {
         scannerService.captureSession
@@ -53,6 +53,11 @@ final class ScannerViewModel {
         }
     }
 
+    func handleAppDidBecomeActive() async {
+        refreshPermissionStatus()
+        handlePermissionUpdate()
+    }
+
     func refreshPermissionStatus() {
         permissionStatus = permissionService.authorizationStatus()
     }
@@ -78,15 +83,22 @@ final class ScannerViewModel {
         scannerService.resumeScanning()
     }
 
-    func submitManualBarcode() {
+    @discardableResult
+    func submitManualBarcode() -> Bool {
         do {
-            let normalized = try BarcodeNormalizer.validated(manualBarcodeValue)
+            let normalized = try BarcodeNormalizer.validated(
+                manualBarcodeValue,
+                symbology: manualBarcodeType
+            )
             resolution = try catalogService.resolveScan(
                 ScannedBarcode(payload: normalized, symbology: manualBarcodeType)
             )
             manualBarcodeValue = ""
+            errorMessage = nil
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 
@@ -128,6 +140,7 @@ final class ScannerViewModel {
         case .success(let barcode):
             do {
                 resolution = try catalogService.resolveScan(barcode)
+                errorMessage = nil
             } catch {
                 errorMessage = error.localizedDescription
                 scannerService.resumeScanning()

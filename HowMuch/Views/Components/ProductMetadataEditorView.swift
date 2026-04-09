@@ -30,7 +30,7 @@ struct ProductMetadataEditorView: View {
                         .autocorrectionDisabled()
 
                     Picker("Barcode Type", selection: $barcodeType) {
-                        ForEach(BarcodeType.allCases) { type in
+                        ForEach(BarcodeType.userSelectableCases) { type in
                             Text(type.rawValue).tag(type)
                         }
                     }
@@ -50,6 +50,7 @@ struct ProductMetadataEditorView: View {
                     Button("Save") {
                         save()
                     }
+                    .disabled(canSave == false)
                 }
             }
         }
@@ -69,6 +70,11 @@ struct ProductMetadataEditorView: View {
                 }
             }
         )
+    }
+
+    private var canSave: Bool {
+        barcodeValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
+            && customName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
     }
 
     private func save() {

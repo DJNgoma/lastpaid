@@ -112,6 +112,10 @@ enum PersistenceController {
             lastScannedAt,
             productToEntries
         ]
+        productEntity.uniquenessConstraints = [["barcodeValue"]]
+        productEntity.indexes = [
+            makeFetchIndex(name: "productBarcodeIndex", property: barcodeValue)
+        ]
 
         priceEntryEntity.properties = [
             priceEntryID,
@@ -140,5 +144,13 @@ enum PersistenceController {
         attribute.attributeType = type
         attribute.isOptional = optional
         return attribute
+    }
+
+    private static func makeFetchIndex(
+        name: String,
+        property: NSPropertyDescription
+    ) -> NSFetchIndexDescription {
+        let element = NSFetchIndexElementDescription(property: property, collationType: .binary)
+        return NSFetchIndexDescription(name: name, elements: [element])
     }
 }

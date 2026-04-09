@@ -1,4 +1,4 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 import Foundation
 
 @MainActor
@@ -37,6 +37,8 @@ final class BarcodeScannerService: NSObject, BarcodeScannerServicing {
             throw ScannerError.unsupportedDevice
         }
 
+        configureCaptureDevice(videoDevice)
+
         let metadataOutput = AVCaptureMetadataOutput()
 
         captureSession.beginConfiguration()
@@ -50,7 +52,7 @@ final class BarcodeScannerService: NSObject, BarcodeScannerServicing {
 
         captureSession.addInput(input)
         captureSession.addOutput(metadataOutput)
-        metadataOutput.setMetadataObjectsDelegate(self, queue: .main)
+        metadataOutput.setMetadataObjectsDelegate(self, queue: sessionQueue)
         metadataOutput.metadataObjectTypes = [
             .ean13,
             .ean8,
@@ -124,6 +126,25 @@ final class BarcodeScannerService: NSObject, BarcodeScannerServicing {
             return .unknown
         }
     }
+
+    private func configureCaptureDevice(_ device: AVCaptureDevice) {
+        do {
+            try device.lockForConfiguration()
+            defer { device.unlockForConfiguration() }
+
+            if device.isFocusModeSupported(.continuousAutoFocus) {
+                device.focusMode = .continuousAutoFocus
+            }
+            if device.isExposureModeSupported(.continuousAutoExposure) {
+                device.exposureMode = .continuousAutoExposure
+            }
+            if device.isLowLightBoostSupported {
+                device.automaticallyEnablesLowLightBoostWhenAvailable = true
+            }
+        } catch {
+            // Scanner setup still works without these capture-device refinements.
+        }
+    }
 }
 
 extension BarcodeScannerService: AVCaptureMetadataOutputObjectsDelegate {
@@ -134,22 +155,20 @@ extension BarcodeScannerService: AVCaptureMetadataOutputObjectsDelegate {
     ) {
         guard let readableCode = metadataObjects.compactMap({ $0 as? AVMetadataMachineReadableCodeObject }).first,
               let rawValue = readableCode.stringValue else {
-            Task { @MainActor [weak self] in
-                self?.emitFailure(.invalidBarcode)
-            }
             return
         }
 
-        let normalizedPayload = BarcodeNormalizer.normalize(rawValue)
+        let symbology = Self.mappedBarcodeType(for: readableCode.type, payload: rawValue)
+        guard symbology != .unknown else {
+            return
+        }
+
+        let normalizedPayload = BarcodeNormalizer.normalize(rawValue, symbology: symbology)
         guard normalizedPayload.isEmpty == false else {
-            Task { @MainActor [weak self] in
-                self?.emitFailure(.invalidBarcode)
-            }
             return
         }
 
         let now = Date.now
-        let symbology = Self.mappedBarcodeType(for: readableCode.type, payload: normalizedPayload)
 
         Task { @MainActor [weak self] in
             self?.handleDetectedPayload(normalizedPayload, symbology: symbology, at: now)

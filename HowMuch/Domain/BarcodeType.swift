@@ -11,4 +11,17 @@ enum BarcodeType: String, CaseIterable, Codable, Sendable, Hashable, Identifiabl
     case unknown = "Unknown"
 
     var id: String { rawValue }
+
+    static var userSelectableCases: [BarcodeType] {
+        allCases.filter { $0 != .unknown }
+    }
+
+    var isNumericRetailCode: Bool {
+        switch self {
+        case .ean13, .ean8, .upca, .upce:
+            return true
+        case .code128, .code39, .qr, .unknown:
+            return false
+        }
+    }
 }

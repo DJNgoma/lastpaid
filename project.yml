@@ -19,11 +19,19 @@ targets:
       - path: HowMuch
     info:
       path: HowMuch/Info.plist
+      properties:
+        CFBundleDisplayName: "How Much?"
+        LSRequiresIPhoneOS: true
+        NSCameraUsageDescription: "How Much? uses the camera to scan product barcodes so you can save prices faster."
+        UILaunchStoryboardName: LaunchScreen
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.djngoma.HowMuch
         PRODUCT_NAME: HowMuch
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: false
         INFOPLIST_FILE: HowMuch/Info.plist
         SUPPORTS_MACCATALYST: false

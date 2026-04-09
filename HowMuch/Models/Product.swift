@@ -24,7 +24,9 @@ final class Product: NSManagedObject {
         updatedAt: Date = .now,
         lastScannedAt: Date = .now
     ) {
-        let entity = NSEntityDescription.entity(forEntityName: "Product", in: context)!
+        guard let entity = NSEntityDescription.entity(forEntityName: "Product", in: context) else {
+            preconditionFailure("Missing Product entity definition.")
+        }
         self.init(entity: entity, insertInto: context)
         self.id = id
         self.barcodeValue = barcodeValue

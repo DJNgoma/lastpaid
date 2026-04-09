@@ -34,7 +34,10 @@ final class CatalogService: CatalogServicing {
     }
 
     func resolveScan(_ barcode: ScannedBarcode) throws -> ScanResolution {
-        let normalizedBarcode = try BarcodeNormalizer.validated(barcode.payload)
+        let normalizedBarcode = try BarcodeNormalizer.validated(
+            barcode.payload,
+            symbology: barcode.symbology
+        )
 
         if let existing = try repository.touchProduct(barcodeValue: normalizedBarcode, scannedAt: barcode.scannedAt) {
             return .existing(existing)
@@ -49,10 +52,14 @@ final class CatalogService: CatalogServicing {
     }
 
     func saveNewProduct(_ draft: ProductDraft, initialPriceEntry: PriceEntryDraft) throws -> ProductDetail {
-        let barcode = try BarcodeNormalizer.validated(draft.barcodeValue)
+        let barcode = try BarcodeNormalizer.validated(draft.barcodeValue, symbology: draft.barcodeType)
 
         if let existing = try repository.fetchProduct(barcodeValue: barcode) {
             return try repository.addPriceEntry(to: existing.id, draft: initialPriceEntry)
+        }
+
+        guard draft.customName.nilIfBlank != nil else {
+            throw CatalogError.missingProductName
         }
 
         return try repository.createProduct(
@@ -67,7 +74,15 @@ final class CatalogService: CatalogServicing {
     }
 
     func updateProduct(_ draft: ProductUpdateDraft) throws -> ProductDetail {
-        try repository.updateProduct(draft)
+        try repository.updateProduct(
+            ProductUpdateDraft(
+                productID: draft.productID,
+                barcodeValue: try BarcodeNormalizer.validated(draft.barcodeValue, symbology: draft.barcodeType),
+                barcodeType: draft.barcodeType,
+                customName: draft.customName,
+                brand: draft.brand
+            )
+        )
     }
 
     func deleteProduct(id: UUID) throws {

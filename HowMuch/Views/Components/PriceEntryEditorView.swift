@@ -52,17 +52,12 @@ struct PriceEntryEditorView: View {
                     TextField("Notes", text: $notes, axis: .vertical)
                 }
 
-                if recentStores.isEmpty == false {
-                    Section("Recent Stores") {
-                        ForEach(recentStores, id: \.self) { store in
-                            Button(store) {
-                                storeName = store
-                            }
-                        }
-                    }
+                RecentStoresSection(stores: recentStores) { store in
+                    storeName = store
                 }
             }
             .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -73,6 +68,7 @@ struct PriceEntryEditorView: View {
                     Button("Save") {
                         save()
                     }
+                    .disabled(canSave == false)
                 }
             }
         }
@@ -92,6 +88,10 @@ struct PriceEntryEditorView: View {
                 }
             }
         )
+    }
+
+    private var canSave: Bool {
+        priceText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
     }
 
     private func save() {

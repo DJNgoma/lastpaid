@@ -3,6 +3,7 @@ import UIKit
 
 struct ScannerView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var viewModel: ScannerViewModel
     let onResolved: (ScanResolution) -> Void
@@ -45,6 +46,15 @@ struct ScannerView: View {
         .task {
             await viewModel.requestAccessIfNeeded()
         }
+        .onChange(of: scenePhase) { _, newValue in
+            guard newValue == .active else {
+                return
+            }
+
+            Task {
+                await viewModel.handleAppDidBecomeActive()
+            }
+        }
         .onChange(of: viewModel.resolution) { _, newValue in
             guard let newValue else {
                 return
@@ -56,7 +66,19 @@ struct ScannerView: View {
             viewModel.stopScanning()
         }
         .sheet(isPresented: $viewModel.isManualEntryPresented) {
-            ManualBarcodeEntryView(viewModel: viewModel)
+            ManualBarcodeEntryView(
+                barcodeValue: $viewModel.manualBarcodeValue,
+                barcodeType: $viewModel.manualBarcodeType,
+                onCancel: {
+                    viewModel.endManualEntry()
+                },
+                onSubmit: {
+                    viewModel.submitManualBarcode()
+                },
+                onSubmitSuccess: {
+                    viewModel.endManualEntry()
+                }
+            )
         }
         .alert("Scanner Error", isPresented: errorAlertBinding) {
             Button("OK", role: .cancel) {
@@ -83,6 +105,10 @@ struct ScannerView: View {
                     }
 
                 Text("Point the barcode inside the frame. Scanning pauses after the first valid read.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+
+                Text("If the code is hard to read, move closer or improve the lighting.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -134,18 +160,23 @@ struct ScannerView: View {
 
 private struct ManualBarcodeEntryView: View {
     @Environment(\.dismiss) private var dismiss
-    @Bindable var viewModel: ScannerViewModel
+    @Binding var barcodeValue: String
+    @Binding var barcodeType: BarcodeType
+    let onCancel: () -> Void
+    let onSubmit: () -> Bool
+    let onSubmitSuccess: () -> Void
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Barcode") {
-                    TextField("Barcode Value", text: $viewModel.manualBarcodeValue)
+                    TextField("Barcode Value", text: $barcodeValue)
+                        .keyboardType(barcodeType.isNumericRetailCode ? .numberPad : .asciiCapable)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
 
-                    Picker("Barcode Type", selection: $viewModel.manualBarcodeType) {
-                        ForEach(BarcodeType.allCases) { type in
+                    Picker("Barcode Type", selection: $barcodeType) {
+                        ForEach(BarcodeType.userSelectableCases) { type in
                             Text(type.rawValue).tag(type)
                         }
                     }
@@ -155,15 +186,14 @@ private struct ManualBarcodeEntryView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
-                        viewModel.endManualEntry()
+                        onCancel()
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Use Barcode") {
-                        viewModel.submitManualBarcode()
-                        if viewModel.errorMessage == nil {
-                            viewModel.endManualEntry()
+                        if onSubmit() {
+                            onSubmitSuccess()
                             dismiss()
                         }
                     }

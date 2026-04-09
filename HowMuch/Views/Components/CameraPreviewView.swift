@@ -22,6 +22,9 @@ final class PreviewContainerView: UIView {
     }
 
     var previewLayer: AVCaptureVideoPreviewLayer {
-        layer as! AVCaptureVideoPreviewLayer
+        guard let previewLayer = layer as? AVCaptureVideoPreviewLayer else {
+            preconditionFailure("PreviewContainerView must use AVCaptureVideoPreviewLayer.")
+        }
+        return previewLayer
     }
 }

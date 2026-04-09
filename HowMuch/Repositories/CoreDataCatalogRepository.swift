@@ -10,18 +10,18 @@ final class CoreDataCatalogRepository: CatalogRepository {
     }
 
     func fetchProducts(query: String, sort: ProductSortOption) throws -> [ProductSummary] {
-        let products = try fetchAllProducts()
-        let filteredProducts = filter(products: products, query: query)
-        let sortedProducts = sortProducts(filteredProducts, sort: sort)
+        let request = makeProductFetchRequest(query: query, sort: sort)
+        let products = try context.fetch(request)
+        let sortedProducts = sortProducts(products, sort: sort)
 
-        return sortedProducts.map(makeProductSummary)
+        return try sortedProducts.map(makeProductSummary)
     }
 
     func fetchProduct(id: UUID) throws -> ProductDetail? {
         guard let product = try fetchProductModel(id: id) else {
             return nil
         }
-        return makeProductDetail(product)
+        return try makeProductDetail(product)
     }
 
     func fetchProduct(barcodeValue: String) throws -> ProductDetail? {
@@ -29,12 +29,13 @@ final class CoreDataCatalogRepository: CatalogRepository {
         guard let product = try fetchProductModel(barcodeValue: barcode) else {
             return nil
         }
-        return makeProductDetail(product)
+        return try makeProductDetail(product)
     }
 
     func createProduct(_ draft: ProductDraft, initialEntry: PriceEntryDraft?) throws -> ProductDetail {
-        let barcode = try BarcodeNormalizer.validated(draft.barcodeValue)
+        let barcode = try BarcodeNormalizer.validated(draft.barcodeValue, symbology: draft.barcodeType)
         try validateCurrencyCodeIfNeeded(initialEntry?.currencyCode)
+        try validateProductName(draft.customName)
 
         if try fetchProductModel(barcodeValue: barcode) != nil {
             throw CatalogError.duplicateBarcode(barcode)
@@ -67,12 +68,13 @@ final class CoreDataCatalogRepository: CatalogRepository {
             )
         }
 
-        try save()
-        return makeProductDetail(product)
+        try save(conflictingBarcode: barcode)
+        return try makeProductDetail(product)
     }
 
     func updateProduct(_ draft: ProductUpdateDraft) throws -> ProductDetail {
-        let barcode = try BarcodeNormalizer.validated(draft.barcodeValue)
+        let barcode = try BarcodeNormalizer.validated(draft.barcodeValue, symbology: draft.barcodeType)
+        try validateProductName(draft.customName)
         guard let product = try fetchProductModel(id: draft.productID) else {
             throw CatalogError.productNotFound
         }
@@ -87,8 +89,8 @@ final class CoreDataCatalogRepository: CatalogRepository {
         product.brand = draft.brand
         product.updatedAt = .now
 
-        try save()
-        return makeProductDetail(product)
+        try save(conflictingBarcode: barcode)
+        return try makeProductDetail(product)
     }
 
     func deleteProduct(id: UUID) throws {
@@ -124,7 +126,7 @@ final class CoreDataCatalogRepository: CatalogRepository {
         product.updatedAt = now
         try save()
 
-        return makeProductDetail(product)
+        return try makeProductDetail(product)
     }
 
     func updatePriceEntry(_ draft: PriceEntryUpdateDraft) throws -> ProductDetail {
@@ -147,7 +149,7 @@ final class CoreDataCatalogRepository: CatalogRepository {
         product.updatedAt = now
 
         try save()
-        return makeProductDetail(product)
+        return try makeProductDetail(product)
     }
 
     func deletePriceEntry(id: UUID) throws -> UUID {
@@ -173,34 +175,63 @@ final class CoreDataCatalogRepository: CatalogRepository {
         product.lastScannedAt = scannedAt
         try save()
 
-        return makeProductDetail(product)
+        return try makeProductDetail(product)
     }
 
     func recentStores(limit: Int) throws -> [String] {
-        let request = PriceEntry.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "purchasedAt", ascending: false)]
-        let entries = try context.fetch(request)
+        guard limit > 0 else {
+            return []
+        }
 
         var seen = Set<String>()
         var stores: [String] = []
+        var offset = 0
+        let batchSize = max(limit * 4, 20)
 
-        for entry in entries {
-            guard let store = entry.storeName?.nilIfBlank else {
-                continue
-            }
-            if seen.insert(store).inserted {
-                stores.append(store)
-            }
-            if stores.count == limit {
+        while stores.count < limit {
+            let request = PriceEntry.fetchRequest()
+            request.sortDescriptors = [NSSortDescriptor(key: "purchasedAt", ascending: false)]
+            request.fetchLimit = batchSize
+            request.fetchOffset = offset
+            request.returnsObjectsAsFaults = false
+
+            let entries = try context.fetch(request)
+            guard entries.isEmpty == false else {
                 break
             }
+
+            for entry in entries {
+                guard let store = entry.storeName?.nilIfBlank else {
+                    continue
+                }
+                if seen.insert(store).inserted {
+                    stores.append(store)
+                }
+                if stores.count == limit {
+                    break
+                }
+            }
+
+            guard entries.count == batchSize else {
+                break
+            }
+            offset += entries.count
         }
 
         return stores
     }
 
-    private func fetchAllProducts() throws -> [Product] {
-        try context.fetch(Product.fetchRequest())
+    private func makeProductFetchRequest(
+        query: String,
+        sort: ProductSortOption
+    ) -> NSFetchRequest<Product> {
+        let request = Product.fetchRequest()
+        request.predicate = makeSearchPredicate(query: query)
+        request.sortDescriptors = makeSortDescriptors(sort: sort)
+        request.fetchBatchSize = 50
+        request.relationshipKeyPathsForPrefetching = ["priceEntries"]
+        request.returnsObjectsAsFaults = false
+        return request
     }
 
     private func fetchProductModel(id: UUID) throws -> Product? {
@@ -224,25 +255,40 @@ final class CoreDataCatalogRepository: CatalogRepository {
         return try context.fetch(request).first
     }
 
-    private func filter(products: [Product], query: String) -> [Product] {
+    private func makeSearchPredicate(query: String) -> NSPredicate? {
         let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmedQuery.isEmpty == false else {
-            return products
+            return nil
         }
 
-        return products.filter { product in
-            if product.displayName.localizedCaseInsensitiveContains(trimmedQuery) {
-                return true
-            }
-            if product.barcodeValue.localizedCaseInsensitiveContains(trimmedQuery) {
-                return true
-            }
-            if product.brand?.localizedCaseInsensitiveContains(trimmedQuery) == true {
-                return true
-            }
-            return product.priceEntries.contains { entry in
-                entry.storeName?.localizedCaseInsensitiveContains(trimmedQuery) == true
-            }
+        return NSCompoundPredicate(orPredicateWithSubpredicates: [
+            NSPredicate(format: "customName CONTAINS[cd] %@", trimmedQuery),
+            NSPredicate(format: "barcodeValue CONTAINS[cd] %@", trimmedQuery),
+            NSPredicate(format: "brand CONTAINS[cd] %@", trimmedQuery),
+            NSPredicate(
+                format: "SUBQUERY(priceEntries, $entry, $entry.storeName CONTAINS[cd] %@).@count > 0",
+                trimmedQuery
+            )
+        ])
+    }
+
+    private func makeSortDescriptors(sort: ProductSortOption) -> [NSSortDescriptor] {
+        switch sort {
+        case .recentlyUpdated:
+            return [
+                NSSortDescriptor(key: "updatedAt", ascending: false),
+                NSSortDescriptor(key: "customName", ascending: true)
+            ]
+        case .recentlyScanned:
+            return [
+                NSSortDescriptor(key: "lastScannedAt", ascending: false),
+                NSSortDescriptor(key: "customName", ascending: true)
+            ]
+        case .alphabetical:
+            return [
+                NSSortDescriptor(key: "customName", ascending: true),
+                NSSortDescriptor(key: "barcodeValue", ascending: true)
+            ]
         }
     }
 
@@ -269,8 +315,8 @@ final class CoreDataCatalogRepository: CatalogRepository {
         }
     }
 
-    private func makeProductSummary(_ product: Product) -> ProductSummary {
-        let entries = sortedRecords(for: product)
+    private func makeProductSummary(_ product: Product) throws -> ProductSummary {
+        let entries = try sortedRecords(for: product)
 
         return ProductSummary(
             id: product.id,
@@ -286,7 +332,7 @@ final class CoreDataCatalogRepository: CatalogRepository {
         )
     }
 
-    private func makeProductDetail(_ product: Product) -> ProductDetail {
+    private func makeProductDetail(_ product: Product) throws -> ProductDetail {
         ProductDetail(
             id: product.id,
             barcodeValue: product.barcodeValue,
@@ -296,12 +342,12 @@ final class CoreDataCatalogRepository: CatalogRepository {
             createdAt: product.createdAt,
             updatedAt: product.updatedAt,
             lastScannedAt: product.lastScannedAt,
-            entries: sortedRecords(for: product)
+            entries: try sortedRecords(for: product)
         )
     }
 
-    private func sortedRecords(for product: Product) -> [PriceEntryRecord] {
-        product.priceEntries
+    private func sortedRecords(for product: Product) throws -> [PriceEntryRecord] {
+        try product.priceEntries
             .sorted { lhs, rhs in
                 if lhs.purchasedAt == rhs.purchasedAt {
                     return lhs.createdAt > rhs.createdAt
@@ -312,7 +358,7 @@ final class CoreDataCatalogRepository: CatalogRepository {
                 PriceEntryRecord(
                     id: entry.id,
                     productID: product.id,
-                    amount: entry.amount,
+                    amount: try entry.decodedAmount(),
                     currencyCode: entry.currencyCode,
                     storeName: entry.storeName,
                     quantityText: entry.quantityText,
@@ -333,9 +379,27 @@ final class CoreDataCatalogRepository: CatalogRepository {
         }
     }
 
-    private func save() throws {
-        if context.hasChanges {
+    private func validateProductName(_ customName: String) throws {
+        guard customName.nilIfBlank != nil else {
+            throw CatalogError.missingProductName
+        }
+    }
+
+    private func save(conflictingBarcode: String? = nil) throws {
+        guard context.hasChanges else {
+            return
+        }
+
+        do {
             try context.save()
+        } catch let error as NSError {
+            if error.domain == NSCocoaErrorDomain,
+               error.code == NSManagedObjectConstraintMergeError,
+               let conflictingBarcode {
+                throw CatalogError.duplicateBarcode(conflictingBarcode)
+            }
+
+            throw CatalogError.persistenceFailure(error.localizedDescription)
         }
     }
 }
