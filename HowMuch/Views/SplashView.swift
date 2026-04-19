@@ -38,7 +38,7 @@ struct SplashView: View {
                     .scaleEffect(animateIn ? 1.0 : 0.82)
                     .opacity(animateIn ? 1 : 0)
 
-                Text("How Much?")
+                Text("Last Paid")
                     .font(.system(size: 30, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                     .opacity(animateIn ? 1 : 0)

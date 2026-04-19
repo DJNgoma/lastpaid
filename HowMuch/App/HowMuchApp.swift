@@ -58,7 +58,7 @@ private struct AppBootstrapView: View {
             }
         } else if let bootstrapError {
             ContentUnavailableView(
-                "How Much? Couldn’t Start",
+                "Last Paid Couldn’t Start",
                 systemImage: "externaldrive.badge.exclamationmark",
                 description: Text(bootstrapError)
             )

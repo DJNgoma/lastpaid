@@ -134,7 +134,7 @@ struct OnboardingView: View {
                 .shadow(color: .black.opacity(0.32), radius: 28, x: 0, y: 14)
 
             VStack(spacing: 10) {
-                Text("Remember\nwhat you paid.")
+                Text("Last Paid.\nRight when you need it.")
                     .font(.system(size: 38, weight: .bold, design: .rounded))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.white)

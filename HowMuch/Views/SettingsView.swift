@@ -30,7 +30,7 @@ struct SettingsView: View {
                     Label("Open System Settings", systemImage: "gearshape")
                 }
             } footer: {
-                Text("Manage camera and location permissions for How Much? in iOS Settings.")
+                Text("Manage camera and location permissions for Last Paid in iOS Settings.")
             }
 
             Section {

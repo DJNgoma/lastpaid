@@ -1,6 +1,6 @@
-# How Much?
+# Last Paid
 
-`How Much?` is a SwiftUI-first iPhone app for one job: scan a product barcode, save the price you paid, and recall that price quickly later.
+`Last Paid` is a SwiftUI-first iPhone app for one job: scan a product barcode, save the price you paid, and recall that price quickly later.
 
 ## Architecture
 

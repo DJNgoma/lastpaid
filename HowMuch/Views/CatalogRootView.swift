@@ -58,7 +58,7 @@ struct CatalogRootView: View {
                 onOpenProduct: { path.append(.product($0)) },
                 onBrowseAll: { path.append(.browseAll) }
             )
-            .navigationTitle("How Much?")
+            .navigationTitle("Last Paid")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

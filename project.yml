@@ -7,7 +7,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: 6.0
-    CURRENT_PROJECT_VERSION: 1
+    CURRENT_PROJECT_VERSION: 2
     MARKETING_VERSION: 1.0
     TARGETED_DEVICE_FAMILY: "1"
 targets:
@@ -20,10 +20,10 @@ targets:
     info:
       path: HowMuch/Info.plist
       properties:
-        CFBundleDisplayName: "How Much?"
+        CFBundleDisplayName: "Last Paid"
         LSRequiresIPhoneOS: true
-        NSCameraUsageDescription: "How Much? uses the camera to scan product barcodes so you can save prices faster."
-        NSLocationWhenInUseUsageDescription: "How Much? tags the place where you saved a price so you can remember which store had the best deal. Location is only captured when you save a new price."
+        NSCameraUsageDescription: "Last Paid uses the camera to scan product barcodes so you can save prices faster."
+        NSLocationWhenInUseUsageDescription: "Last Paid tags the place where you saved a price so you can remember which store had the best deal. Location is only captured when you save a new price."
         UILaunchStoryboardName: LaunchScreen
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
