@@ -77,9 +77,6 @@ struct PriceEntryEditorView: View {
                     storeName = store
                 }
             }
-            .task {
-                await captureLocation(force: false)
-            }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -176,7 +173,7 @@ struct LocationPill: View {
                 if isCapturing {
                     Text("Finding location…")
                         .font(.subheadline.weight(.medium))
-                    Text("This only happens when you save")
+                    Text("Only captured when you choose to tag it")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else if let captured = capturedLocation {
@@ -190,7 +187,7 @@ struct LocationPill: View {
                 } else {
                     Text("No location tagged")
                         .font(.subheadline.weight(.medium))
-                    Text("Enable Location to remember where you bought it")
+                    Text("Tag it if you want to remember where you bought it")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

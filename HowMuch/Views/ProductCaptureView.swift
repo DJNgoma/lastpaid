@@ -72,7 +72,6 @@ struct ProductCaptureView: View {
         }
         .task {
             viewModel.loadRecentStores()
-            await viewModel.captureLocationIfPossible()
         }
         .alert("Unable to Save", isPresented: errorAlertBinding) {
             Button("OK", role: .cancel) { }

@@ -26,6 +26,9 @@
 2. Open `HowMuch.xcodeproj`.
 3. Run the `HowMuch` scheme on an iPhone simulator or device.
 
+Note: barcode scanning requires a real iPhone camera. On the iOS simulator,
+use the manual barcode entry flow instead.
+
 ## Tests
 
 - The test target is non-hosted and compiles the core data/service layers directly so persistence tests can run without launching the app UI.

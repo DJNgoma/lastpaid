@@ -20,10 +20,12 @@ targets:
     info:
       path: HowMuch/Info.plist
       properties:
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "2"
         CFBundleDisplayName: "Last Paid"
         LSRequiresIPhoneOS: true
         NSCameraUsageDescription: "Last Paid uses the camera to scan product barcodes so you can save prices faster."
-        NSLocationWhenInUseUsageDescription: "Last Paid tags the place where you saved a price so you can remember which store had the best deal. Location is only captured when you save a new price."
+        NSLocationWhenInUseUsageDescription: "Last Paid can optionally tag where you bought a product so you can remember which store had the best deal."
         UILaunchStoryboardName: LaunchScreen
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
