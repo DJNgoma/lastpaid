@@ -1,0 +1,9 @@
+Last Paid does not require an account or login.
+
+The core flow is:
+1. Scan a product barcode with the camera, or enter the barcode manually.
+2. Save the price paid, store, purchase date, and optional notes.
+3. Open the saved product later to see the latest price, previous price, and history.
+
+Camera access is only used for barcode scanning.
+Location access is optional and is only used if the tester chooses to tag where a purchase was saved.

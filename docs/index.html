@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Last Paid Support</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f3f7f8;
+        --card: #ffffff;
+        --ink: #102128;
+        --muted: #52646b;
+        --accent: #0e8e87;
+        --accent-dark: #0a6762;
+        --line: #d7e4e6;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(14, 142, 135, 0.12), transparent 32%),
+          linear-gradient(180deg, #f7fbfb 0%, var(--bg) 100%);
+        color: var(--ink);
+      }
+
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 48px 20px 72px;
+      }
+
+      .hero {
+        display: grid;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        margin: 0;
+        font-size: 0.82rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent-dark);
+        font-weight: 700;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 0.95;
+        letter-spacing: -0.05em;
+      }
+
+      .lede {
+        margin: 0;
+        max-width: 56ch;
+        font-size: 1.08rem;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 18px 42px rgba(16, 33, 40, 0.07);
+      }
+
+      h2 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.05rem;
+      }
+
+      p, li {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      a.button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 18px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        color: #fff;
+        background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+      }
+
+      a.secondary {
+        color: var(--accent-dark);
+        background: rgba(14, 142, 135, 0.1);
+      }
+
+      footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <p class="eyebrow">Last Paid</p>
+        <h1>Remember what you last paid.</h1>
+        <p class="lede">
+          Last Paid helps you scan a product barcode, save the price you paid,
+          and check your latest price history the next time you shop.
+        </p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Support</h2>
+          <p>
+            Last Paid is designed to be simple and local-first. If you run into
+            trouble while testing, capture the screen where the issue happens
+            and include the steps that led to it when you report it.
+          </p>
+          <ul>
+            <li>Share the product barcode or manual entry used.</li>
+            <li>Include the store, price, and date you entered.</li>
+            <li>Note whether the issue happened after scanning or manual entry.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>What the App Does</h2>
+          <p>
+            The app stores product names, barcodes, notes, and purchase prices
+            so you can compare your recent prices over time.
+          </p>
+          <p>
+            Camera access is only used for barcode scanning. Location tagging is
+            optional and only used when you choose to tag a purchase.
+          </p>
+        </article>
+      </section>
+
+      <div class="actions">
+        <a class="button" href="./privacy/">Read Privacy Policy</a>
+      </div>
+
+      <footer>
+        This page is published for App Store support and review context for
+        Last Paid.
+      </footer>
+    </main>
+  </body>
+</html>

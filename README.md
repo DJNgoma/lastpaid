@@ -41,6 +41,15 @@ Run tests with:
 xcodebuild -project HowMuch.xcodeproj -scheme HowMuch -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test
 ```
 
+## Release assets
+
+- `appstore/screenshots/en-US/iphone65`: generated App Store screenshot set for the 6.5-inch iPhone class.
+- `appstore/metadata/en-US.json`: canonical English App Store marketing copy for subtitle, description, and keywords.
+- `appstore/privacy/no-data-collected.json`: App Privacy declaration used for the current release flow.
+- `appstore/review-notes.txt`: reviewer notes for barcode scanning, manual entry, and optional location tagging.
+- `tools/generate_app_store_screenshots.py`: deterministic generator for the committed screenshot assets.
+- `docs/`: GitHub Pages support site and privacy policy used for the App Store support and privacy URLs.
+
 ## Next steps
 
 - Replace the temporary SwiftUI shell with a more polished frontend without changing the repository or service contracts.
