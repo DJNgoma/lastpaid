@@ -38,10 +38,10 @@ class Slide:
 
 
 SLIDES = [
-    Slide("01-scan-every-barcode.png", "SCAN", "EVERY BARCODE", "home"),
+    Slide("01-scan-every-barcode.png", "SCAN", "OR TYPE BARCODES", "home"),
     Slide("02-save-what-you-paid.png", "SAVE", "WHAT YOU PAID", "capture"),
     Slide("03-check-the-last-price-fast.png", "CHECK", "THE LAST PRICE FAST", "detail"),
-    Slide("04-compare-stores-over-time.png", "COMPARE", "STORES OVER TIME", "history"),
+    Slide("04-compare-stores-over-time.png", "SEARCH", "SAVED PRICES FAST", "catalog"),
 ]
 
 
@@ -212,33 +212,25 @@ def draw_detail(screen: Image.Image) -> None:
     draw_list_row(draw, 1112, "Pick n Pay", "16 Mar · 2L carton", "R47.99", "OLDER", "#94AAA7")
 
 
-def draw_history(screen: Image.Image) -> None:
+def draw_catalog(screen: Image.Image) -> None:
     draw = ImageDraw.Draw(screen)
     draw_status_bar(draw, screen.width)
-    draw.text((44, 118), "Price History", font=TITLE_FONT, fill=INK)
-    draw.text((46, 184), "See which store was cheaper over time", font=BODY_FONT, fill=MUTED)
+    draw.text((44, 118), "Saved Items", font=TITLE_FONT, fill=INK)
+    draw.text((46, 184), "Search by product, barcode, or store", font=BODY_FONT, fill=MUTED)
 
-    draw_rounded(draw, (44, 260, 680, 680), 34, CARD_ALT)
-    draw.text((70, 302), "STORE COMPARISON", font=SMALL_BOLD, fill=ACCENT_DARK)
+    draw_rounded(draw, (44, 260, 680, 354), 28, CARD_ALT, outline="#DCE7E9")
+    draw.text((82, 292), "milk", font=BODY_FONT, fill=MUTED)
+    draw_secondary_button(draw, (508, 272, 680, 342), "Newest")
 
-    points = [(112, 604), (230, 514), (348, 562), (466, 428), (584, 486)]
-    draw.line(points, fill=ACCENT, width=10, joint="curve")
-    for px, py in points:
-        draw.ellipse((px - 14, py - 14, px + 14, py + 14), fill=CARD_ALT, outline=ACCENT, width=7)
-    for idx, label in enumerate(["Mar", "Apr", "May", "Jun", "Jul"]):
-        draw.text((88 + idx * 118, 622), label, font=SMALL_FONT, fill=MUTED)
+    draw.text((44, 414), "Results", font=SECTION_FONT, fill=INK)
+    draw_list_row(draw, 466, "Full Cream Milk", "Barcode 6001234567890", "R49.99", "1 ENTRY", ACCENT_DARK)
+    draw_list_row(draw, 630, "Long Life Milk", "Barcode 6000987654321", "R52.99", "2 ENTRIES", "#94AAA7")
+    draw_list_row(draw, 794, "Peanut Butter", "Checkers · latest store", "R89.99", "3 ENTRIES", "#94AAA7")
 
-    for idx, (store, price, note) in enumerate([
-        ("Checkers", "R49.99", "Lowest recent price"),
-        ("Woolworths", "R52.99", "Premium shelf price"),
-        ("Pick n Pay", "R47.99", "Best historical deal"),
-    ]):
-        top = 760 + idx * 168
-        draw_rounded(draw, (44, top, 680, top + 140), 26, CARD_ALT, outline="#E4EEEE")
-        draw.text((74, top + 26), store, font=BODY_BOLD, fill=INK)
-        draw.text((74, top + 76), note, font=SMALL_FONT, fill=MUTED)
-        price_bbox = draw.textbbox((0, 0), price, font=BODY_BOLD)
-        draw.text((640 - (price_bbox[2] - price_bbox[0]), top + 38), price, font=BODY_BOLD, fill=INK)
+    draw.text((44, 994), "Recent stores", font=SECTION_FONT, fill=INK)
+    draw_secondary_button(draw, (44, 1046, 248, 1116), "Checkers")
+    draw_secondary_button(draw, (264, 1046, 492, 1116), "Woolworths")
+    draw_secondary_button(draw, (508, 1046, 680, 1116), "Spar")
 
 
 def draw_brand_badge(canvas: Image.Image) -> None:
@@ -275,7 +267,7 @@ def make_slide(slide: Slide) -> Image.Image:
     elif slide.kind == "detail":
         draw_detail(screen)
     else:
-        draw_history(screen)
+        draw_catalog(screen)
     paste_screen(bg, screen, origin)
 
     return bg.convert("RGB")
