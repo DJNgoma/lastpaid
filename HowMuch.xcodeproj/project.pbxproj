@@ -387,6 +387,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					85E9D74638F67F05A8E85119 = {
+						DevelopmentTeam = 5CND4GK432;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 47264711C8BB62F3D8AD2463 /* Build configuration list for PBXProject "HowMuch" */;
@@ -552,7 +556,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -582,6 +586,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5CND4GK432;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = HowMuch/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -640,6 +646,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5CND4GK432;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = HowMuch/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -689,7 +697,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;

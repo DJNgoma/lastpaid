@@ -7,7 +7,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: 6.0
-    CURRENT_PROJECT_VERSION: 2
+    CURRENT_PROJECT_VERSION: 3
     MARKETING_VERSION: 1.0
     TARGETED_DEVICE_FAMILY: "1"
 targets:
@@ -21,7 +21,7 @@ targets:
       path: HowMuch/Info.plist
       properties:
         CFBundleShortVersionString: "1.0"
-        CFBundleVersion: "2"
+        CFBundleVersion: "3"
         CFBundleDisplayName: "Last Paid"
         LSRequiresIPhoneOS: true
         NSCameraUsageDescription: "Last Paid uses the camera to scan product barcodes so you can save prices faster."
@@ -34,6 +34,8 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.djngoma.HowMuch
         PRODUCT_NAME: HowMuch
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 5CND4GK432
         TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: false
         INFOPLIST_FILE: HowMuch/Info.plist
