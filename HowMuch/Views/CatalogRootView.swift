@@ -10,6 +10,7 @@ private enum CatalogSheet: Identifiable {
     case scanner
     case manualEntry
     case capture(ProductDraft)
+    case quickAdd(ProductDetail, KnownProductQuickAddOrigin)
 
     var id: String {
         switch self {
@@ -19,8 +20,15 @@ private enum CatalogSheet: Identifiable {
             "manual-entry"
         case .capture(let draft):
             "capture-\(draft.id.uuidString)"
+        case .quickAdd(let product, let origin):
+            "quick-add-\(product.id.uuidString)-\(origin.rawValue)"
         }
     }
+}
+
+private enum SheetFollowUp {
+    case reopenScanner
+    case navigateToProduct(UUID)
 }
 
 @MainActor
@@ -29,11 +37,13 @@ struct CatalogRootView: View {
     private let makeScannerViewModel: () -> ScannerViewModel
     private let makeProductCaptureViewModel: (ProductDraft) -> ProductCaptureViewModel
     private let makeProductDetailViewModel: (UUID) -> ProductDetailViewModel
+    private let makeKnownProductQuickAddViewModel: (ProductDetail) -> KnownProductQuickAddViewModel
 
     @State private var path: [CatalogRoute] = []
     @State private var presentedSheet: CatalogSheet?
     @State private var scannerViewModel: ScannerViewModel?
     @State private var pendingScannerResolution: ScanResolution?
+    @State private var pendingSheetFollowUp: SheetFollowUp?
     @State private var manualBarcode = ""
     @State private var manualBarcodeType: BarcodeType = BarcodeType.userSelectableCases.first ?? .ean13
 
@@ -41,12 +51,14 @@ struct CatalogRootView: View {
         viewModel: CatalogListViewModel,
         makeScannerViewModel: @escaping () -> ScannerViewModel,
         makeProductCaptureViewModel: @escaping (ProductDraft) -> ProductCaptureViewModel,
-        makeProductDetailViewModel: @escaping (UUID) -> ProductDetailViewModel
+        makeProductDetailViewModel: @escaping (UUID) -> ProductDetailViewModel,
+        makeKnownProductQuickAddViewModel: @escaping (ProductDetail) -> KnownProductQuickAddViewModel
     ) {
         _viewModel = State(initialValue: viewModel)
         self.makeScannerViewModel = makeScannerViewModel
         self.makeProductCaptureViewModel = makeProductCaptureViewModel
         self.makeProductDetailViewModel = makeProductDetailViewModel
+        self.makeKnownProductQuickAddViewModel = makeKnownProductQuickAddViewModel
     }
 
     var body: some View {
@@ -119,6 +131,22 @@ struct CatalogRootView: View {
                         viewModel.scheduleLoad(immediate: true)
                         path.append(.product(detail.id))
                     }
+                case .quickAdd(let product, let origin):
+                    KnownProductQuickAddView(
+                        viewModel: makeKnownProductQuickAddViewModel(product)
+                    ) { _ in
+                        viewModel.scheduleLoad(immediate: true)
+                        switch CatalogScanFlow.saveFollowUp(for: origin) {
+                        case .none:
+                            pendingSheetFollowUp = nil
+                        case .reopenScanner:
+                            pendingSheetFollowUp = .reopenScanner
+                        }
+                        presentedSheet = nil
+                    } onViewHistory: { productID in
+                        pendingSheetFollowUp = .navigateToProduct(productID)
+                        presentedSheet = nil
+                    }
                 }
             }
         }
@@ -144,17 +172,24 @@ struct CatalogRootView: View {
     private func handleSheetDismiss() {
         let resolution = pendingScannerResolution
         pendingScannerResolution = nil
+        let followUp = pendingSheetFollowUp
+        pendingSheetFollowUp = nil
 
         if scannerViewModel != nil {
             scannerViewModel = nil
             viewModel.scheduleLoad(immediate: true)
         }
 
-        guard let resolution else {
+        if let resolution {
+            handle(resolution, knownProductOrigin: .scanner)
             return
         }
 
-        handle(resolution)
+        guard let followUp else {
+            return
+        }
+
+        perform(followUp: followUp)
     }
 
     private func handleManualEntrySubmit() {
@@ -165,15 +200,24 @@ struct CatalogRootView: View {
         manualBarcode = ""
         presentedSheet = nil
         viewModel.scheduleLoad(immediate: true)
-        handle(resolution)
+        handle(resolution, knownProductOrigin: .manualEntry)
     }
 
-    private func handle(_ resolution: ScanResolution) {
-        switch resolution {
-        case .existing(let product):
-            path.append(.product(product.id))
-        case .newDraft(let draft):
+    private func handle(_ resolution: ScanResolution, knownProductOrigin: KnownProductQuickAddOrigin) {
+        switch CatalogScanFlow.destination(for: resolution, knownProductOrigin: knownProductOrigin) {
+        case .capture(let draft):
             presentedSheet = .capture(draft)
+        case .quickAdd(let product, let origin):
+            presentedSheet = .quickAdd(product, origin)
+        }
+    }
+
+    private func perform(followUp: SheetFollowUp) {
+        switch followUp {
+        case .reopenScanner:
+            presentScanner()
+        case .navigateToProduct(let productID):
+            path.append(.product(productID))
         }
     }
 }

@@ -5,19 +5,19 @@ struct OnboardingView: View {
 
     private let features: [OnboardingFeature] = [
         OnboardingFeature(
-            title: "Scan the barcode",
-            message: "Use the camera when it is convenient, or type the barcode manually if the label is hard to read.",
+            title: "Scan or type the barcode",
+            message: "Use the camera when it is available, or enter the barcode manually when the label is hard to read.",
             systemImage: "barcode.viewfinder"
         ),
         OnboardingFeature(
-            title: "Save what you paid",
-            message: "Add the price, store, pack size, and purchase date so each product keeps a clean price history.",
+            title: "Save the price and place",
+            message: "Log what you paid, where you bought it, and the purchase date so every scan adds to a usable history.",
             systemImage: "tag"
         ),
         OnboardingFeature(
-            title: "Recall the last price fast",
-            message: "When you rescan the same product later, the latest price is shown first with the previous one right behind it.",
-            systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90"
+            title: "Compare places next time",
+            message: "When you rescan the same product later, Last Paid shows the latest price first and the cheapest places you recorded.",
+            systemImage: "chart.line.text.clipboard"
         )
     ]
 
@@ -97,7 +97,7 @@ struct OnboardingView: View {
                     }
                     .buttonStyle(PressableScaleButtonStyle())
 
-                    Text("Takes a few seconds — you'll only see this once.")
+                    Text("A quick walkthrough now saves time every time you rescan.")
                         .font(.footnote)
                         .foregroundStyle(.white.opacity(0.78))
                 }
@@ -140,7 +140,7 @@ struct OnboardingView: View {
                     .foregroundStyle(.white)
                     .lineSpacing(2)
 
-                Text("Scan the product. Save the price.\nSee the last amount instantly next time.")
+                Text("Scan the product. Save the price and place.\nCompare the last amount and cheapest spots next time.")
                     .font(.system(size: 16, weight: .regular))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.white.opacity(0.88))

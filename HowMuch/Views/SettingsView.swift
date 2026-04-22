@@ -39,17 +39,17 @@ struct SettingsView: View {
                     didCompleteOnboarding = false
                     withAnimation { didReset = true }
                 } label: {
-                    Label("Restart Onboarding", systemImage: "arrow.counterclockwise.circle.fill")
+                    Label("Show Welcome Walkthrough Again", systemImage: "arrow.counterclockwise.circle.fill")
                         .foregroundStyle(Color.accentColor)
                 }
             } header: {
-                Text("Developer")
+                Text("Help")
             } footer: {
                 if didReset {
-                    Text("Onboarding will appear next time you return to the home screen.")
+                    Text("The welcome walkthrough will appear the next time you return to the home screen.")
                         .foregroundStyle(.green)
                 } else {
-                    Text("Resets the “seen onboarding” flag so the welcome flow shows again.")
+                    Text("Use this if you want to revisit how scanning, saving places, and quick price recall work.")
                 }
             }
         }

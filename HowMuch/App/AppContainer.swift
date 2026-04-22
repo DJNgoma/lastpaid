@@ -60,4 +60,12 @@ final class AppContainer {
             locationService: locationService
         )
     }
+
+    func makeKnownProductQuickAddViewModel(product: ProductDetail) -> KnownProductQuickAddViewModel {
+        KnownProductQuickAddViewModel(
+            product: product,
+            catalogService: catalogService,
+            locationService: locationService
+        )
+    }
 }

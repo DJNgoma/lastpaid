@@ -148,6 +148,104 @@ struct ProductMetaCard: View {
     }
 }
 
+struct CheapestPlacesCard: View {
+    let snapshot: CheapestPlacesSnapshot
+    var title: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(title)
+                    .font(.title3.weight(.semibold))
+                Spacer()
+                if snapshot.places.isEmpty == false {
+                    Text("Top \(snapshot.places.count)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            if snapshot.places.isEmpty {
+                Text("Add a store or tagged location to compare places later.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(spacing: 0) {
+                    ForEach(Array(snapshot.places.enumerated()), id: \.element.id) { index, place in
+                        CheapestPlaceRow(rank: index + 1, summary: place)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+
+                        if index < snapshot.places.count - 1 {
+                            Divider().padding(.leading, 16)
+                        }
+                    }
+                }
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(Color(.tertiarySystemGroupedBackground))
+                )
+
+                if snapshot.usesEnteredQuantities {
+                    Text("Prices are compared as entered. Pack sizes may differ.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(22)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Color(.secondarySystemGroupedBackground))
+        )
+    }
+}
+
+private struct CheapestPlaceRow: View {
+    let rank: Int
+    let summary: CheapestPlaceSummary
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Text("\(rank)")
+                .font(.caption.weight(.bold))
+                .foregroundStyle(Color.accentColor)
+                .frame(width: 24, height: 24)
+                .background(
+                    Circle().fill(Color.accentColor.opacity(0.12))
+                )
+
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Image(systemName: summary.sourceKind.systemImage)
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                    Text(summary.label)
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
+                }
+
+                HStack(spacing: 6) {
+                    Text(summary.purchasedAt, format: .dateTime.month(.abbreviated).day().year())
+                    if let quantityText = summary.quantityText {
+                        Text("·")
+                        Text(quantityText)
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Text(CurrencyFormatter.string(from: summary.amount, currencyCode: summary.currencyCode))
+                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                .monospacedDigit()
+        }
+    }
+}
+
 struct HistorySection: View {
     let entries: [PriceEntryRecord]
     let onEdit: (PriceEntryRecord) -> Void

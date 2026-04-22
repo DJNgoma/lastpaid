@@ -50,6 +50,7 @@ targets:
       - path: HowMuch/Persistence
       - path: HowMuch/Repositories
       - path: HowMuch/Services
+      - path: HowMuch/ViewModels
       - path: HowMuch/Utilities
     info:
       path: HowMuchTests/Info.plist

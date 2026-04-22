@@ -27,6 +27,10 @@ final class ProductDetailViewModel {
         PriceHistoryCalculator.snapshot(for: product?.entries ?? [])
     }
 
+    var cheapestPlacesSnapshot: CheapestPlacesSnapshot {
+        CheapestPlacesCalculator.snapshot(for: product?.entries ?? [])
+    }
+
     func load() {
         isLoading = true
         defer { isLoading = false }

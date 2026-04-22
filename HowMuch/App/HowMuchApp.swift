@@ -47,6 +47,9 @@ private struct AppBootstrapView: View {
                     },
                     makeProductDetailViewModel: { productID in
                         container.makeProductDetailViewModel(productID: productID)
+                    },
+                    makeKnownProductQuickAddViewModel: { product in
+                        container.makeKnownProductQuickAddViewModel(product: product)
                     }
                 )
             } else {

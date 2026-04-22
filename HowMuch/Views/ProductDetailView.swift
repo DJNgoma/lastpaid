@@ -141,6 +141,11 @@ struct ProductDetailView: View {
                         onAddPrice: { isAddingPrice = true }
                     )
 
+                    CheapestPlacesCard(
+                        snapshot: viewModel.cheapestPlacesSnapshot,
+                        title: "Cheapest Places"
+                    )
+
                     ProductMetaCard(product: product)
 
                     HistorySection(

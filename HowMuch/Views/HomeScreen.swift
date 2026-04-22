@@ -323,7 +323,7 @@ private struct EmptyHomeState: View {
                 .foregroundStyle(Color.accentColor.opacity(0.8))
             Text("No items yet")
                 .font(.title3.weight(.semibold))
-            Text("Scan a product barcode to remember what you paid.")
+            Text("Scan a product barcode to remember what you paid and where you bought it.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
