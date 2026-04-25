@@ -7,15 +7,15 @@ private enum CatalogRoute: Hashable {
 }
 
 private enum CatalogSheet: Identifiable {
-    case scanner
+    case scanner(ScannerViewModel)
     case manualEntry
     case capture(ProductDraft)
     case quickAdd(ProductDetail, KnownProductQuickAddOrigin)
 
     var id: String {
         switch self {
-        case .scanner:
-            "scanner"
+        case .scanner(let viewModel):
+            "scanner-\(ObjectIdentifier(viewModel).hashValue)"
         case .manualEntry:
             "manual-entry"
         case .capture(let draft):
@@ -41,7 +41,7 @@ struct CatalogRootView: View {
 
     @State private var path: [CatalogRoute] = []
     @State private var presentedSheet: CatalogSheet?
-    @State private var scannerViewModel: ScannerViewModel?
+    @State private var didPresentScanner = false
     @State private var pendingScannerResolution: ScanResolution?
     @State private var pendingSheetFollowUp: SheetFollowUp?
     @State private var manualBarcode = ""
@@ -108,14 +108,10 @@ struct CatalogRootView: View {
             }
             .sheet(item: $presentedSheet, onDismiss: handleSheetDismiss) { sheet in
                 switch sheet {
-                case .scanner:
-                    if let scannerViewModel {
-                        ScannerView(viewModel: scannerViewModel) { resolution in
-                            pendingScannerResolution = resolution
-                            presentedSheet = nil
-                        }
-                    } else {
-                        ProgressView().presentationDetents([.medium])
+                case .scanner(let scannerViewModel):
+                    ScannerView(viewModel: scannerViewModel) { resolution in
+                        pendingScannerResolution = resolution
+                        presentedSheet = nil
                     }
                 case .manualEntry:
                     HomeManualEntrySheet(
@@ -165,8 +161,8 @@ struct CatalogRootView: View {
     }
 
     private func presentScanner() {
-        scannerViewModel = makeScannerViewModel()
-        presentedSheet = .scanner
+        didPresentScanner = true
+        presentedSheet = .scanner(makeScannerViewModel())
     }
 
     private func handleSheetDismiss() {
@@ -175,8 +171,8 @@ struct CatalogRootView: View {
         let followUp = pendingSheetFollowUp
         pendingSheetFollowUp = nil
 
-        if scannerViewModel != nil {
-            scannerViewModel = nil
+        if didPresentScanner {
+            didPresentScanner = false
             viewModel.scheduleLoad(immediate: true)
         }
 

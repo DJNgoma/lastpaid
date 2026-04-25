@@ -1,5 +1,9 @@
 Last Paid does not require an account or login.
 
+Resubmission notes for build 1.0 (4):
+- Fixed the Scan Barcode presentation issue reported on iPad Air 11-inch (M3). The scanner sheet now opens directly with the scanner view model instead of showing a loading fallback.
+- Updated the Support URL page with a visible email support contact for questions, help, and bug reports.
+
 The core flow is:
 1. Scan a product barcode with the camera, or enter the barcode manually.
 2. Save the price paid, store, purchase date, and optional notes.
