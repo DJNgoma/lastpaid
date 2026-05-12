@@ -51,10 +51,50 @@ final class KnownProductQuickAddViewModelTests: XCTestCase {
 
         let updated = try XCTUnwrap(viewModel.save())
 
+        XCTAssertEqual(updated.entries.count, 3)
         XCTAssertEqual(updated.latestEntry?.amount, decimal("10.50"))
         XCTAssertEqual(viewModel.product.latestEntry?.storeName, "Store C")
         XCTAssertEqual(viewModel.product.latestEntry?.placeName, "Sandton City")
+        XCTAssertEqual(updated.barcodeValue, "4006381333931")
+        XCTAssertEqual(updated.customName, "Full Cream Milk")
+        XCTAssertTrue(updated.entries.contains { entry in
+            entry.amount == decimal("12.00") && entry.storeName == "Store A"
+        })
+        XCTAssertTrue(updated.entries.contains { entry in
+            entry.amount == decimal("11.00") && entry.storeName == "Store B"
+        })
         XCTAssertEqual(viewModel.cheapestPlacesSnapshot.places.map(\.label), ["Store C", "Store B", "Store A"])
+    }
+
+    func testInitialisesFromLatestPriceForFastScannerAdd() throws {
+        let service = try makeService()
+        let created = try service.saveNewProduct(
+            ProductDraft(
+                barcodeValue: "5012345678900",
+                barcodeType: .ean13,
+                customName: "Coffee"
+            ),
+            initialPriceEntry: PriceEntryDraft(
+                amount: decimal("89.99"),
+                currencyCode: "ZAR",
+                storeName: "PnP",
+                quantityText: "250g",
+                purchasedAt: date("2026-03-01")
+            )
+        )
+
+        let product = try service.loadProduct(id: created.id)
+        let viewModel = KnownProductQuickAddViewModel(
+            product: product,
+            catalogService: service,
+            locationService: TestLocationService()
+        )
+
+        XCTAssertEqual(try DecimalParser.parseCurrencyInput(viewModel.priceText), decimal("89.99"))
+        XCTAssertEqual(viewModel.currencyCode, "ZAR")
+        XCTAssertEqual(viewModel.quantityText, "250g")
+        XCTAssertEqual(viewModel.storeName, "")
+        XCTAssertTrue(viewModel.canSave)
     }
 
     func testSaveRefreshesRecentStores() throws {

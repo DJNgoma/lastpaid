@@ -30,6 +30,8 @@ final class KnownProductQuickAddViewModel {
         self.catalogService = catalogService
         self.locationService = locationService
         self.currencyCode = product.latestEntry?.currencyCode ?? "ZAR"
+        self.priceText = product.latestEntry.map { Self.editablePriceText(from: $0.amount) } ?? ""
+        self.quantityText = product.latestEntry?.quantityText ?? ""
     }
 
     var historySnapshot: PriceHistorySnapshot {
@@ -100,5 +102,9 @@ final class KnownProductQuickAddViewModel {
 
     func clearError() {
         errorMessage = nil
+    }
+
+    private static func editablePriceText(from amount: Decimal) -> String {
+        NSDecimalNumber(decimal: amount).stringValue
     }
 }

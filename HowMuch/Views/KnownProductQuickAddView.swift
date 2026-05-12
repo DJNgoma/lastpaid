@@ -39,7 +39,7 @@ struct KnownProductQuickAddView: View {
                     .listRowBackground(Color.clear)
                 }
 
-                Section("New Price") {
+                Section("Add Price") {
                     TextField("Price Paid", text: $viewModel.priceText)
                         .keyboardType(.decimalPad)
                     DatePicker("Purchase Date", selection: $viewModel.purchasedAt, displayedComponents: .date)
@@ -68,7 +68,7 @@ struct KnownProductQuickAddView: View {
                     }
                 }
             }
-            .navigationTitle("Update Price")
+            .navigationTitle("Add Price")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -77,7 +77,7 @@ struct KnownProductQuickAddView: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button("Add") {
                         handleSave()
                     }
                     .disabled(viewModel.canSave == false || viewModel.isSaving)
